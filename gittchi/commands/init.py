@@ -76,8 +76,8 @@ def run() -> None:
             from gittchi.git_io.github_api import fetch, language_percentages
             profile = fetch(github_username)
 
-        if profile and profile.language_bytes:
-            lang_pct = language_percentages(profile)
+        if profile:
+            lang_pct = language_percentages(profile)  # 언어 없으면 빈 dict (정상)
             top_langs = list(lang_pct.keys())[:5]
 
             with console.status(f"[dim]{name} 분석 중...[/dim]"):
@@ -97,6 +97,10 @@ def run() -> None:
                 ai_summary=ai_summary,
             )
             greeting_prompt = first_impression_with_profile_prompt(name, ai_summary)
+        else:
+            # fetch 실패(네트워크/rate limit)해도 username은 저장
+            memory.long_term = LongTermProfile(github_username=github_username)
+            console.print("[dim]GitHub 분석 실패. username만 저장됩니다.[/dim]")
 
     save_memory(memory)
 
