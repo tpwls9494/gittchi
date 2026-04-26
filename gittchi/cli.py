@@ -43,6 +43,20 @@ def cmd_config(
     run(model=model, api_key=api_key)
 
 
+@app.command("sync")
+def cmd_sync() -> None:
+    """내 레벨·XP를 글로벌 랭킹에 등록 (opt-in)"""
+    from gittchi.commands.sync import run
+    run()
+
+
+@app.command("rank")
+def cmd_rank() -> None:
+    """글로벌 랭킹 확인"""
+    from gittchi.commands.rank import run
+    run()
+
+
 @app.command("attach")
 def cmd_attach() -> None:
     """현재 레포에 추가로 hook 설치 (global hook 미적용 환경용)"""
