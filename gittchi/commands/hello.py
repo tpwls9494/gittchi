@@ -38,7 +38,7 @@ def run(message: str | None = None) -> None:
         memory.chat_history = []
         memory.chat_pet_type = config.pet_type
 
-    recent = recent_messages(memory, n=10)
+    recent = recent_messages(memory, n=5)  # 10→5 컨텍스트 줄여 응답 속도 개선
     profile_summary = memory.long_term.ai_summary
     system_ctx = hello_system_context(recent, profile_summary, status_name)
 
