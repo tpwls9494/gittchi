@@ -107,6 +107,9 @@ def run() -> None:
             days_together=days_together,
         )
 
+    if not analysis:
+        analysis = "[dim]API 키가 없거나 호출에 실패했습니다. gittchi init에서 API 키를 확인하세요.[/dim]"
+
     console.print(Panel(
         analysis,
         title="✨ AI 분석",

@@ -21,6 +21,7 @@ def call_llm(
     empty_on_error: bool = False,         # True면 오류 시 "" 반환 (페르소나 fallback 저장 방지)
 ) -> str:
     import litellm  # lazy — top-level import 시 CLI 시작 0.5s+ 느려짐
+    litellm.suppress_debug_info = True
 
     key = _get_api_key(api_key)
     system = override_system if override_system is not None else get_system_prompt(pet_type)

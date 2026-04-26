@@ -95,6 +95,7 @@ def _react(dry_run: bool) -> None:
         leveled_up=leveled_up,
     ))
 
-    # 저장 (출력 후 — 저장 실패해도 반응은 이미 출력됨)
-    save_pet(pet)
-    save_memory(memory)
+    # dry-run은 출력만, 상태 저장 안 함
+    if not dry_run:
+        save_pet(pet)
+        save_memory(memory)
