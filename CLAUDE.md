@@ -91,7 +91,7 @@ gittchi react || true   # 펫이 죽어도 사용자 워크플로 안 막음
 - [x] **Stage 1** — Core loop: `init`(기본) + `react` + hook 설치 + LLM 반응
 - [x] **Stage 2** — HMAC + 단기 기억 + status decay + hook 체이닝
 - [x] **Stage 3** — GH 분석 + 장기 기억 + `hello` REPL
-- [ ] **Stage 4** — `petinfo` + 메모리 압축 + `uninstall`/`attach` + ASCII
+- [x] **Stage 4** — `petinfo` + 메모리 압축 + `uninstall`/`attach` + ASCII
 
 상세 산출물·결정 근거: `/Users/isejin/.claude/plans/enumerated-toasting-fern.md`
 

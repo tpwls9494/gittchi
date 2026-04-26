@@ -1,15 +1,16 @@
 import time
 from rich.console import Console
-from rich.panel import Panel
 from gittchi.config import load_config
 from gittchi.git_io.commit_reader import read_last_commit
 from gittchi.llm.client import call_llm
 from gittchi.llm.prompts import commit_reaction_prompt
 from gittchi.state.pet import load_pet, save_pet, new_pet, apply_commit
-from gittchi.state.memory import load_memory, save_memory, add_commit, recent_messages, CommitRecord
+from gittchi.state.memory import load_memory, save_memory, add_commit, recent_messages, CommitRecord, Memory
 from gittchi.state.store import TamperedError
 from gittchi.rules.commit_xp import commit_xp
 from gittchi.rules.status import compute_status
+from gittchi.ui.ascii_pets import get as get_kaomoji
+from gittchi.ui.render import reaction_panel
 
 console = Console()
 
@@ -34,21 +35,18 @@ def _react(dry_run: bool) -> None:
     try:
         pet = load_pet()
     except TamperedError:
-        console.print(Panel("[bold red]⚠️  변조 감지[/bold red] 펫이 초기화됩니다.", border_style="red"))
+        console.print("[bold red]⚠️  변조 감지[/bold red] 펫이 초기화됩니다.")
         pet = None
     pet = pet or new_pet()
 
     try:
         memory = load_memory()
     except TamperedError:
-        from gittchi.state.memory import Memory
         memory = Memory()
 
-    # XP 계산
+    # XP 계산 + 펫 상태 업데이트
     is_bad = not commit.message.strip() or commit.message.strip() == "(알 수 없음)"
     xp_gain = commit_xp(commit.commit_type, commit.message)
-
-    # 펫 상태 업데이트
     pet, old_level, leveled_up = apply_commit(pet, xp_gain, is_bad)
 
     # 메모리 업데이트
@@ -60,10 +58,11 @@ def _react(dry_run: bool) -> None:
     )
     memory = add_commit(memory, record)
 
-    # 상태 계산
+    # 상태 + 카오모지
     status_name, status_emoji = compute_status(pet.last_commit_at, pet.streak_days)
     if pet.is_angry:
         status_name, status_emoji = "화남", "😤"
+    kaomoji = get_kaomoji(config.pet_type, status_name)
 
     # LLM 호출
     recent = recent_messages(memory, n=10)[:-1]  # 방금 추가한 커밋 제외
@@ -77,28 +76,25 @@ def _react(dry_run: bool) -> None:
     response = call_llm(
         pet_type=config.pet_type,
         pet_name=config.pet_name,
-        user_prompt=prompt,
         model=config.model,
         api_key=config.api_key,
+        user_prompt=prompt,
     )
 
     # 출력
-    xp_bar = "█" * round(pet.xp / 100 * 10) + "░" * (10 - round(pet.xp / 100 * 10))
-    level_str = (
-        f"[bold cyan]Lv.{old_level} → Lv.{pet.level}[/bold cyan]"
-        if leveled_up
-        else f"Lv.{pet.level}"
-    )
-    status_line = f"{status_emoji} {status_name}  {level_str}  XP {xp_bar} +{xp_gain}"
+    console.print(reaction_panel(
+        pet_name=config.pet_name,
+        kaomoji=kaomoji,
+        response=response,
+        status_emoji=status_emoji,
+        status_name=status_name,
+        level=pet.level,
+        old_level=old_level,
+        xp=pet.xp,
+        xp_gain=xp_gain,
+        leveled_up=leveled_up,
+    ))
 
-    console.print(
-        Panel(
-            f'[bold]{config.pet_name}[/bold]: "{response}"\n[dim]{status_line}[/dim]',
-            border_style="yellow",
-            padding=(0, 1),
-        )
-    )
-
-    # 상태 저장 (출력 후 — 저장 실패해도 반응은 이미 출력됨)
+    # 저장 (출력 후 — 저장 실패해도 반응은 이미 출력됨)
     save_pet(pet)
     save_memory(memory)
