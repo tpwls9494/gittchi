@@ -15,6 +15,19 @@ PET_TYPES = {
 
 
 def run() -> None:
+    from gittchi.config import load_config
+    from rich.prompt import Confirm
+
+    existing = load_config()
+    if existing.pet_name:
+        console.print(
+            f"\n[yellow]⚠️  이미 [bold]{existing.pet_name}[/bold]이(가) 있어요.[/yellow]\n"
+            "재설정하면 현재 펫의 XP·레벨·기억이 모두 초기화됩니다."
+        )
+        if not Confirm.ask("계속하시겠어요?", default=False):
+            console.print("[dim]취소됐습니다.[/dim]\n")
+            return
+
     console.print("\n[bold yellow]🥚 Gittchi에 오신 걸 환영합니다![/bold yellow]\n")
 
     name = Prompt.ask("펫의 이름을 지어주세요")
