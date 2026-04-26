@@ -83,8 +83,8 @@ def _react(dry_run: bool) -> None:
         user_prompt=prompt,
     )
 
-    # 업적 체크
-    new_achievements = check_new(pet, memory)
+    # 업적 체크 (dry-run에서는 저장 안 하므로 알림도 생략)
+    new_achievements = [] if dry_run else check_new(pet, memory)
 
     # 출력
     max_xp = xp_for_next_level(pet.level)
