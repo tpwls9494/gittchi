@@ -105,12 +105,15 @@ gittchi uninstall   # 작별 인사 후 삭제
 
 | 상태 | 이모지 | 트리거 |
 |------|--------|--------|
-| 행복 | 😊 | feat 커밋, 꾸준한 커밋 |
-| 화남 | 😤 | 커밋 메시지 없음, 같은 버그 반복 |
+| 보통 | 😐 | 기본 상태 |
+| 행복 | 😊 | 오늘 커밋 있음 |
+| 신남 | 😄 | 3일 연속 커밋 |
+| 최고 | 🥰 | 7일 연속 커밋 |
 | 배고픔 | 😮‍💨 | 마지막 커밋 2일 이상 |
 | 슬픔 | 😢 | 마지막 커밋 5일 이상 |
 | 아픔 | 🤒 | 마지막 커밋 7일 이상 |
 | 위중 | 😷 | 마지막 커밋 10일 이상 |
+| 화남 *(일시적)* | 😤 | 빈 커밋 메시지, 같은 버그 반복 — 다음 커밋까지만 |
 
 **회복:** 어떤 커밋이든 하면 회복됨 (feat/fix → 빠른 회복, chore/docs → 느린 회복)
 
@@ -246,10 +249,11 @@ gittchi init --model gpt-4o
 ~/.gittchi/
 ├── pet.json          # 펫 상태 (HMAC 서명 포함)
 ├── memory.json       # 커밋 기억 (3단계)
-└── config.json       # API 키, 모델 설정
-
-~/.config/git/hooks/
-└── post-commit       # global hook (gittchi init 시 자동 설치)
+├── config.json       # API 키, 모델 설정
+├── .hmac_key         # HMAC 키
+└── hooks/
+    └── post-commit   # global hook (gittchi init 시 자동 설치)
+                      # git config --global core.hooksPath ~/.gittchi/hooks
 ```
 
 ---

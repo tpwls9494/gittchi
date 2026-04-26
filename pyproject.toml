@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gittchi"
+version = "0.1.0"
+description = "git commit을 먹이로 자라는 AI 펫 CLI"
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13",
+    "litellm>=1.40",
+    "gitpython>=3.1",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+gittchi = "gittchi.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gittchi"]
