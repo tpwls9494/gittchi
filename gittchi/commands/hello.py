@@ -33,6 +33,11 @@ def run(message: str | None = None) -> None:
     if pet.is_angry:
         status_name, status_emoji = "화남", "😤"
 
+    # pet_type이 바뀌면 채팅 기록 초기화 (이전 페르소나 톤 오염 방지)
+    if memory.chat_pet_type != config.pet_type:
+        memory.chat_history = []
+        memory.chat_pet_type = config.pet_type
+
     recent = recent_messages(memory, n=10)
     profile_summary = memory.long_term.ai_summary
     system_ctx = hello_system_context(recent, profile_summary, status_name)
@@ -60,6 +65,7 @@ def run(message: str | None = None) -> None:
         # 대화 저장
         chat_history.append({"role": "assistant", "content": response})
         memory.chat_history = chat_history[-(MAX_TURNS * 2):]
+        memory.chat_pet_type = config.pet_type
         from gittchi.state.memory import save_memory
         save_memory(memory)
         return
@@ -112,6 +118,7 @@ def run(message: str | None = None) -> None:
 
     # 종료 시 대화 저장
     memory.chat_history = chat_history
+    memory.chat_pet_type = config.pet_type
     from gittchi.state.memory import save_memory
     save_memory(memory)
     console.print()
