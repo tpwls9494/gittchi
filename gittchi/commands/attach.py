@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 from rich.console import Console
 
@@ -22,7 +23,12 @@ def run() -> None:
         console.print("[dim]덮어쓰려면 직접 삭제 후 다시 실행하세요.[/dim]")
         return
 
-    hook.write_text("#!/bin/sh\ngittchi react || true\n", encoding="utf-8")
+    # sys.executable 사용 — Windows/WSL/Mac 모두 올바른 Python 경로 보장
+    python_exe = sys.executable.replace("\\", "/")
+    hook.write_text(
+        f'#!/bin/sh\n"{python_exe}" -m gittchi react || true\n',
+        encoding="utf-8",
+    )
     hook.chmod(0o755)
 
     console.print(f"[bold green]✓[/bold green] hook 설치 완료: [dim]{hook}[/dim]")

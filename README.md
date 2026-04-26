@@ -44,6 +44,9 @@ Gittchi는 다르다:
 pip install gittchi
 ```
 
+> **Windows:** Git for Windows + Windows Terminal 환경에서 네이티브 지원.
+> WSL2도 동일하게 사용 가능.
+
 ---
 
 ## 시작하기
