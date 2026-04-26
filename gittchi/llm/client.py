@@ -1,6 +1,8 @@
 import os
 from gittchi.llm.personas import get_system_prompt, FALLBACK_LINES
 
+NEUTRAL_SYSTEM = "주어진 데이터를 바탕으로 한국어로 간결하고 객관적으로 답한다."
+
 
 def _get_api_key(config_key: str) -> str:
     return os.environ.get("GITTCHI_API_KEY", config_key)
@@ -12,14 +14,16 @@ def call_llm(
     model: str,
     api_key: str,
     user_prompt: str = "",
-    extra_messages: list[dict] | None = None,  # multi-turn: [{"role": "user/assistant", "content": "..."}]
-    system_extra: str = "",                     # 시스템 프롬프트에 append할 컨텍스트
+    extra_messages: list[dict] | None = None,  # multi-turn
+    system_extra: str = "",
     fallback_key: str = "commit",
+    override_system: str | None = None,  # 분석용 — 펫 페르소나 대신 중립 시스템 사용
+    empty_on_error: bool = False,         # True면 오류 시 "" 반환 (페르소나 fallback 저장 방지)
 ) -> str:
     import litellm  # lazy — top-level import 시 CLI 시작 0.5s+ 느려짐
 
     key = _get_api_key(api_key)
-    system = get_system_prompt(pet_type)
+    system = override_system if override_system is not None else get_system_prompt(pet_type)
     if system_extra:
         system = f"{system}\n\n{system_extra}"
 
@@ -34,4 +38,6 @@ def call_llm(
         )
         return response.choices[0].message.content.strip()
     except Exception:
+        if empty_on_error:
+            return ""
         return FALLBACK_LINES.get(pet_type, FALLBACK_LINES["cat"]).get(fallback_key, "...")

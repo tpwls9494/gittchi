@@ -38,11 +38,10 @@ def run() -> None:
     kaomoji = get_kaomoji(config.pet_type, status_name)
     pet_icon = PET_EMOJI.get(config.pet_type, "🐾")
 
-    # 함께한 날 계산
-    days_together = 0
-    if pet.last_commit_at > 0:
-        age_sec = datetime.now(timezone.utc).timestamp() - pet.last_commit_at
-        days_together = max(1, int(age_sec / 86400))
+    # 함께한 날 계산 — created_at 기준 (last_commit_at은 커밋마다 갱신되어 사용 불가)
+    now_ts = datetime.now(timezone.utc).timestamp()
+    anchor = pet.created_at if pet.created_at > 0 else pet.last_commit_at
+    days_together = max(1, int((now_ts - anchor) / 86400)) if anchor > 0 else 1
 
     # 헤더
     owner = lt.github_username or config.github_username or "unknown"

@@ -81,12 +81,15 @@ def run() -> None:
             top_langs = list(lang_pct.keys())[:5]
 
             with console.status(f"[dim]{name} 분석 중...[/dim]"):
+                from gittchi.llm.client import NEUTRAL_SYSTEM
                 ai_summary = call_llm(
                     pet_type=pet_type,
                     pet_name=name,
                     model=model,
                     api_key=api_key,
                     user_prompt=profile_generation_prompt(github_username, lang_pct, profile.notable_repos),
+                    override_system=NEUTRAL_SYSTEM,
+                    empty_on_error=True,  # 실패 시 페르소나 fallback 저장 방지
                 )
 
             memory.long_term = LongTermProfile(
@@ -94,9 +97,10 @@ def run() -> None:
                 top_languages=top_langs,
                 language_pct=lang_pct,
                 notable_repos=profile.notable_repos,
-                ai_summary=ai_summary,
+                ai_summary=ai_summary,  # 실패 시 "" — petinfo에서 graceful 처리
             )
-            greeting_prompt = first_impression_with_profile_prompt(name, ai_summary)
+            if ai_summary:
+                greeting_prompt = first_impression_with_profile_prompt(name, ai_summary)
         else:
             # fetch 실패(네트워크/rate limit)해도 username은 저장
             memory.long_term = LongTermProfile(github_username=github_username)

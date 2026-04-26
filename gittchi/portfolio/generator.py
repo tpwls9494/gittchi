@@ -61,10 +61,13 @@ def generate(
         notable_repos=lt.notable_repos,
         commit_type_counts=commit_counts,
     )
+    from gittchi.llm.client import NEUTRAL_SYSTEM
     return call_llm(
         pet_type=pet_type,
         pet_name=pet_name,
         model=model,
         api_key=api_key,
         user_prompt=prompt,
+        override_system="개발자 포트폴리오 분석 전문가다. " + NEUTRAL_SYSTEM,
+        empty_on_error=True,
     )

@@ -45,7 +45,7 @@ def _react(dry_run: bool) -> None:
         memory = Memory()
 
     # XP 계산 + 펫 상태 업데이트
-    is_bad = not commit.message.strip() or commit.message.strip() == "(알 수 없음)"
+    is_bad = not commit.message.strip()  # 내부 에러값("알 수 없음")은 사용자 잘못 아님
     xp_gain = commit_xp(commit.commit_type, commit.message)
     pet, old_level, leveled_up = apply_commit(pet, xp_gain, is_bad)
 

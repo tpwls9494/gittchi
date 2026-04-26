@@ -12,6 +12,7 @@ class Pet:
     xp: int = 0
     total_commits: int = 0
     last_commit_at: float = 0.0
+    created_at: float = 0.0      # init 시 설정, 이후 변경 없음
     streak_days: int = 0
     last_commit_date: str = ""   # YYYY-MM-DD
     is_angry: bool = False
@@ -31,7 +32,8 @@ def save_pet(pet: Pet) -> None:
 
 
 def new_pet() -> Pet:
-    return Pet(last_commit_at=datetime.now(timezone.utc).timestamp())
+    now = datetime.now(timezone.utc).timestamp()
+    return Pet(last_commit_at=now, created_at=now)
 
 
 def apply_commit(pet: Pet, xp_gain: int, is_bad_commit: bool) -> tuple[Pet, int, bool]:

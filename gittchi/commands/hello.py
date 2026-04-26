@@ -46,7 +46,7 @@ def run() -> None:
         api_key=config.api_key,
         user_prompt="주인이 말을 걸었어. 짧게 반응해줘.",
         system_extra=system_ctx,
-        fallback_key="neglect" if pet.streak_days == 0 else "commit",
+        fallback_key="neglect" if (pet.total_commits > 0 and pet.streak_days == 0) else "commit",
     )
     console.print(f"\n[bold]{config.pet_name}[/bold]: \"{opening}\"")
     console.print(f"[dim]{status_emoji} {status_name}  |  Lv.{pet.level}  |  빈 입력으로 종료[/dim]\n")
