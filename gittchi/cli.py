@@ -37,10 +37,11 @@ def cmd_petinfo() -> None:
 def cmd_config(
     model: str = typer.Option(None, "--model", help="모델 변경 (예: gpt-4o-mini)"),
     api_key: str = typer.Option(None, "--api-key", help="API 키 변경"),
+    pet_type: str = typer.Option(None, "--pet-type", help="펫 종류 변경 (dog|cat|rabbit|bear)"),
 ) -> None:
-    """현재 설정 확인 또는 모델/API 키 변경"""
+    """현재 설정 확인 또는 모델/API 키/펫 종류 변경"""
     from gittchi.commands.config_cmd import run
-    run(model=model, api_key=api_key)
+    run(model=model, api_key=api_key, pet_type=pet_type)
 
 
 @app.command("sync")
