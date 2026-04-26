@@ -21,14 +21,15 @@ def reaction_panel(
     xp: int,
     xp_gain: int,
     leveled_up: bool,
+    max_xp: int = 100,
 ) -> Panel:
     level_str = (
         f"[bold cyan]Lv.{old_level} → Lv.{level} ✨[/bold cyan]"
         if leveled_up
         else f"Lv.{level}"
     )
-    bar = xp_bar(xp)
-    status_line = f"{status_emoji} {status_name}  {level_str}  XP {bar} +{xp_gain}"
+    bar = xp_bar(xp, total=max_xp)
+    status_line = f"{status_emoji} {status_name}  {level_str}  XP {bar} +{xp_gain}/{max_xp}"
 
     body = Text()
     body.append(f"{kaomoji}  ", style="bold")

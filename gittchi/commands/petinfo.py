@@ -116,4 +116,18 @@ def run() -> None:
         border_style="cyan",
         padding=(0, 1),
     ))
+
+    # 업적
+    from gittchi.rules.achievements import ACHIEVEMENTS
+    unlocked = set(memory.unlocked_achievements)
+    unlocked_list = [a for a in ACHIEVEMENTS if a.id in unlocked]
+    if unlocked_list:
+        line = "  ".join(f"{a.emoji} {a.name}" for a in unlocked_list)
+        console.print(Panel(
+            line,
+            title=f"🎖️  업적 ({len(unlocked_list)}/{len(ACHIEVEMENTS)})",
+            border_style="yellow",
+            padding=(0, 1),
+        ))
+
     console.print()

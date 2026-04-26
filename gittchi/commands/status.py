@@ -5,6 +5,7 @@ from gittchi.state.pet import load_pet
 from gittchi.state.store import TamperedError
 from gittchi.rules.status import compute_status
 from gittchi.ui.ascii_pets import get as get_kaomoji
+from gittchi.state.pet import xp_for_next_level
 
 console = Console()
 
@@ -39,7 +40,7 @@ def run() -> None:
         Panel(
             f"[bold]{config.pet_name}[/bold]  Lv.{pet.level}  {kaomoji}\n"
             f"{status_emoji}  {status_name}\n\n"
-            f"XP  {_xp_bar(pet.xp)}  {pet.xp}/100\n"
+            f"XP  {_xp_bar(pet.xp, total=xp_for_next_level(pet.level))}  {pet.xp}/{xp_for_next_level(pet.level)}\n"
             f"총 커밋 {pet.total_commits}  |  연속 {pet.streak_days}일",
             title="🐾 펫 상태",
             border_style="yellow",

@@ -9,6 +9,8 @@ from gittchi.state.memory import load_memory, save_memory, add_commit, recent_me
 from gittchi.state.store import TamperedError
 from gittchi.rules.commit_xp import commit_xp
 from gittchi.rules.status import compute_status
+from gittchi.rules.achievements import check_new
+from gittchi.state.pet import xp_for_next_level
 from gittchi.ui.ascii_pets import get as get_kaomoji
 from gittchi.ui.render import reaction_panel
 
@@ -81,7 +83,11 @@ def _react(dry_run: bool) -> None:
         user_prompt=prompt,
     )
 
+    # 업적 체크
+    new_achievements = check_new(pet, memory)
+
     # 출력
+    max_xp = xp_for_next_level(pet.level)
     console.print(reaction_panel(
         pet_name=config.pet_name,
         kaomoji=kaomoji,
@@ -91,9 +97,16 @@ def _react(dry_run: bool) -> None:
         level=pet.level,
         old_level=old_level,
         xp=pet.xp,
+        max_xp=max_xp,
         xp_gain=xp_gain,
         leveled_up=leveled_up,
     ))
+
+    # 새 업적 알림
+    if new_achievements:
+        from rich.panel import Panel
+        lines = "  ".join(f"{a.emoji} {a.name}" for a in new_achievements)
+        console.print(Panel(f"[bold yellow]🎉 업적 달성![/bold yellow]  {lines}", border_style="yellow", padding=(0, 1)))
 
     # dry-run은 출력만, 상태 저장 안 함
     if not dry_run:

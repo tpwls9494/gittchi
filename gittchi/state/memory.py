@@ -35,7 +35,8 @@ class Memory:
     short_term: list[CommitRecord] = field(default_factory=list)
     mid_term: list[MonthlySummary] = field(default_factory=list)
     long_term: LongTermProfile = field(default_factory=LongTermProfile)
-    chat_history: list[dict] = field(default_factory=list)  # hello 대화 기억 (최근 10턴)
+    chat_history: list[dict] = field(default_factory=list)          # hello 대화 기억 (최근 10턴)
+    unlocked_achievements: list[str] = field(default_factory=list)  # 달성 업적 ID 목록
 
 
 # ── 로드 / 저장 ──────────────────────────────────────────────────────────────
@@ -58,8 +59,12 @@ def load_memory() -> Memory:
     long_term = LongTermProfile(**{k: v for k, v in lt_data.items() if k in valid_lt})
 
     chat_history = data.get("chat_history", [])
+    unlocked_achievements = data.get("unlocked_achievements", [])
 
-    return Memory(short_term=short, mid_term=mid, long_term=long_term, chat_history=chat_history)
+    return Memory(
+        short_term=short, mid_term=mid, long_term=long_term,
+        chat_history=chat_history, unlocked_achievements=unlocked_achievements,
+    )
 
 
 def save_memory(memory: Memory) -> None:
@@ -67,7 +72,8 @@ def save_memory(memory: Memory) -> None:
         "short_term":   [asdict(r) for r in memory.short_term],
         "mid_term":     [asdict(m) for m in memory.mid_term],
         "long_term":    asdict(memory.long_term),
-        "chat_history": memory.chat_history,
+        "chat_history":          memory.chat_history,
+        "unlocked_achievements": memory.unlocked_achievements,
     })
 
 

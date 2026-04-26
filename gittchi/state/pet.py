@@ -3,7 +3,9 @@ from datetime import datetime, timezone, date
 from gittchi.paths import pet_json
 from gittchi.state import store
 
-XP_PER_LEVEL = 100
+def xp_for_next_level(level: int) -> int:
+    """레벨이 높을수록 더 많은 XP 필요 (100 × 현재레벨)."""
+    return 100 * level
 
 
 @dataclass
@@ -64,8 +66,8 @@ def apply_commit(pet: Pet, xp_gain: int, is_bad_commit: bool) -> tuple[Pet, int,
 
     old_level = pet.level
     pet.xp += xp_gain
-    while pet.xp >= XP_PER_LEVEL:
-        pet.xp -= XP_PER_LEVEL
+    while pet.xp >= xp_for_next_level(pet.level):
+        pet.xp -= xp_for_next_level(pet.level)
         pet.level += 1
 
     return pet, old_level, pet.level > old_level
