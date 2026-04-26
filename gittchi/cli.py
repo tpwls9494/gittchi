@@ -11,10 +11,12 @@ def cmd_init() -> None:
 
 
 @app.command("hello")
-def cmd_hello() -> None:
-    """펫과 대화"""
+def cmd_hello(
+    message: str = typer.Argument(None, help="바로 전달할 메시지 (없으면 대화 모드 진입)"),
+) -> None:
+    """펫과 대화. 메시지를 인수로 주면 단발 응답, 없으면 대화 모드"""
     from gittchi.commands.hello import run
-    run()
+    run(message=message)
 
 
 @app.command("status")
