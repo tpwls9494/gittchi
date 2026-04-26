@@ -1,4 +1,4 @@
-# GitGotchi 🐾
+# Gittchi 🐾
 
 > 내 GitHub를 이해하는 AI 펫 — 혼자 개발하는 사람의 유일한 동반자
 
@@ -7,7 +7,7 @@
 ## 왜 만드는가
 
 혼자 사이드 프로젝트를 하다 보면 아무도 봐주지 않고, 반응도 없고, 결국 동기부여가 사라져 포기하게 된다.
-GitGotchi는 git commit을 먹이로 자라는 AI 펫을 통해 이 외로움과 동기부여 문제를 해결한다.
+Gittchi는 git commit을 먹이로 자라는 AI 펫을 통해 이 외로움과 동기부여 문제를 해결한다.
 
 ---
 
@@ -19,7 +19,7 @@ GitGotchi는 git commit을 먹이로 자라는 AI 펫을 통해 이 외로움과
 
 ## 핵심 가치
 
-| 문제 | GitGotchi 해결 |
+| 문제 | Gittchi 해결 |
 |------|---------------|
 | 혼자 개발 → 외로움 | 펫이 커밋마다 반응 |
 | 동기부여 사라짐 | 상태 시스템 (방치하면 아파함) |
@@ -32,14 +32,14 @@ GitGotchi는 git commit을 먹이로 자라는 AI 펫을 통해 이 외로움과
 
 기존 펫 툴들은 커밋 횟수를 세는 단순한 다마고치다.
 
-GitGotchi는 다르다:
+Gittchi는 다르다:
 - **커밋 내용을 읽는다** — 숫자가 아닌 맥락을 이해
 - **개발자를 기억한다** — 과거 레포 분석으로 나를 파악
 - **시간이 쌓일수록 나를 더 잘 안다** — 단순 도구가 아닌 동반자
 
 ```
 기존 툴: "커밋 감사해요! +10 행복"
-GitGotchi: "오 드디어 그 인증 버그 고쳤네. 저번에 힘들어 보였는데."
+Gittchi: "오 드디어 그 인증 버그 고쳤네. 저번에 힘들어 보였는데."
 ```
 
 ---
@@ -102,22 +102,22 @@ Conventional Commits 규약(`feat:`, `fix:` 등)을 사용할수록 XP 혜택이
 ## 커맨드
 
 ```bash
-gitgotchi init          # 최초 설정 (이름, 펫 선택, GitHub 연동) + global hook 자동 설치
-gitgotchi attach        # 팀 레포 등 global hook 외 추가 레포에 hook 설치
-gitgotchi hello         # 펫 불러오기 (대화)
-gitgotchi petinfo       # 내 개발자 프로필 + 포트폴리오
-gitgotchi status        # 펫 상태 확인
-gitgotchi uninstall     # 작별 인사 후 삭제
+gittchi init          # 최초 설정 (이름, 펫 선택, GitHub 연동) + global hook 자동 설치
+gittchi attach        # 팀 레포 등 global hook 외 추가 레포에 hook 설치
+gittchi hello         # 펫 불러오기 (대화)
+gittchi petinfo       # 내 개발자 프로필 + 포트폴리오
+gittchi status        # 펫 상태 확인
+gittchi uninstall     # 작별 인사 후 삭제
 ```
 
 ---
 
 ## git hook 설치 방식
 
-`gitgotchi init` 시 `~/.config/git/hooks/post-commit`에 global hook을 설치한다.
+`gittchi init` 시 `~/.config/git/hooks/post-commit`에 global hook을 설치한다.
 이후 모든 레포에서 커밋 시 자동으로 반응한다.
 
-`gitgotchi attach`는 global hook이 적용되지 않는 특수 환경(팀 레포, 다른 git config 등)에서만 사용한다.
+`gittchi attach`는 global hook이 적용되지 않는 특수 환경(팀 레포, 다른 git config 등)에서만 사용한다.
 
 ---
 
@@ -125,10 +125,10 @@ gitgotchi uninstall     # 작별 인사 후 삭제
 
 ### 첫 설치
 ```bash
-pip install gitgotchi
-gitgotchi init
+pip install gittchi
+gittchi init
 
-🥚 GitGotchi에 오신 걸 환영합니다!
+🥚 Gittchi에 오신 걸 환영합니다!
 펫의 이름을 지어주세요: > 코코
 
 어떤 펫으로 키울까요?
@@ -153,7 +153,7 @@ $ git commit -m "feat: 로그인 기능 추가"
 
 ### /hello 대화
 ```bash
-$ gitgotchi hello
+$ gittchi hello
 코코: "왜 불렀어"
 > 오늘 뭐 할까?
 코코: "어제 feat 커밋하고 오늘 아무것도 안 했잖아. 그 기능 테스트는 짰어?"
@@ -163,7 +163,7 @@ $ gitgotchi hello
 
 ### 오랜만에 복귀 (고양이)
 ```bash
-$ gitgotchi hello
+$ gittchi hello
 코코: "...왔어?"
       "...딱히 기다린 건 아니거든."
       [😢 슬픔 — 커밋하면 회복됩니다]
@@ -171,7 +171,7 @@ $ gitgotchi hello
 
 ### /petinfo — 포트폴리오 자동 생성
 ```bash
-$ gitgotchi petinfo
+$ gittchi petinfo
 
 ╔══════════════════════════════════════════════╗
 ║  🐱 코코 (Lv.12)          주인: tpwls9494   ║
@@ -257,9 +257,9 @@ pyproject.toml    → pip 패키지 빌드
 유저가 직접 API 키를 제공한다. 커밋마다 1회 호출.
 
 ```bash
-gitgotchi init --model gemini/gemini-2.5-flash  # 기본값 (무료 티어 활용 가능)
-gitgotchi init --model claude-sonnet-4-6
-gitgotchi init --model gpt-4o
+gittchi init --model gemini/gemini-2.5-flash  # 기본값 (무료 티어 활용 가능)
+gittchi init --model claude-sonnet-4-6
+gittchi init --model gpt-4o
 ```
 
 ---
@@ -267,13 +267,13 @@ gitgotchi init --model gpt-4o
 ## 파일 구조
 
 ```
-~/.gitgotchi/
+~/.gittchi/
 ├── pet.json          # 펫 상태 (HMAC 서명 포함)
 ├── memory.json       # 커밋 기억 (3단계)
 └── config.json       # API 키, 모델 설정, 상태 시스템 기준 시간
 
 ~/.config/git/hooks/
-└── post-commit       # global hook (gitgotchi init 시 자동 설치)
+└── post-commit       # global hook (gittchi init 시 자동 설치)
 ```
 
 ---
