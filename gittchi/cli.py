@@ -33,6 +33,16 @@ def cmd_petinfo() -> None:
     run()
 
 
+@app.command("config")
+def cmd_config(
+    model: str = typer.Option(None, "--model", help="모델 변경 (예: gpt-4o-mini)"),
+    api_key: str = typer.Option(None, "--api-key", help="API 키 변경"),
+) -> None:
+    """현재 설정 확인 또는 모델/API 키 변경"""
+    from gittchi.commands.config_cmd import run
+    run(model=model, api_key=api_key)
+
+
 @app.command("attach")
 def cmd_attach() -> None:
     """현재 레포에 추가로 hook 설치 (global hook 미적용 환경용)"""

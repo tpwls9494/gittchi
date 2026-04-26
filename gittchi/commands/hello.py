@@ -40,19 +40,28 @@ def run(message: str | None = None) -> None:
     fallback_key = "neglect" if (pet.total_commits > 0 and pet.streak_days == 0) else "commit"
 
     # ── 단발 모드: 메시지를 인수로 받은 경우 ────────────────────────────────
-    # Claude Code 등 비인터랙티브 환경에서 gittchi hello "메시지" 로 사용
     if message:
+        # 이전 대화 이어받기
+        chat_history = list(memory.chat_history)
+        chat_history.append({"role": "user", "content": message})
+
         response = call_llm(
             pet_type=config.pet_type,
             pet_name=config.pet_name,
             model=config.model,
             api_key=config.api_key,
-            extra_messages=[{"role": "user", "content": message}],
+            extra_messages=chat_history,
             system_extra=system_ctx,
             fallback_key=fallback_key,
         )
         console.print(f"\n[bold]{config.pet_name}[/bold]: \"{response}\"")
         console.print(f"[dim]{status_emoji} {status_name}  |  Lv.{pet.level}[/dim]\n")
+
+        # 대화 저장
+        chat_history.append({"role": "assistant", "content": response})
+        memory.chat_history = chat_history[-(MAX_TURNS * 2):]
+        from gittchi.state.memory import save_memory
+        save_memory(memory)
         return
 
     # ── 대화 모드: 인수 없이 실행한 경우 (터미널 REPL) ──────────────────────
@@ -68,7 +77,8 @@ def run(message: str | None = None) -> None:
     console.print(f"\n[bold]{config.pet_name}[/bold]: \"{opening}\"")
     console.print(f"[dim]{status_emoji} {status_name}  |  Lv.{pet.level}  |  빈 입력으로 종료[/dim]\n")
 
-    chat_history: list[dict] = [
+    # 이전 대화 이어받기
+    chat_history = list(memory.chat_history) or [
         {"role": "user", "content": "주인이 말을 걸었어."},
         {"role": "assistant", "content": opening},
     ]
@@ -100,4 +110,8 @@ def run(message: str | None = None) -> None:
         if len(chat_history) > MAX_TURNS * 2:
             chat_history = chat_history[-(MAX_TURNS * 2):]
 
+    # 종료 시 대화 저장
+    memory.chat_history = chat_history
+    from gittchi.state.memory import save_memory
+    save_memory(memory)
     console.print()

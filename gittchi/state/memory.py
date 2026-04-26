@@ -35,6 +35,7 @@ class Memory:
     short_term: list[CommitRecord] = field(default_factory=list)
     mid_term: list[MonthlySummary] = field(default_factory=list)
     long_term: LongTermProfile = field(default_factory=LongTermProfile)
+    chat_history: list[dict] = field(default_factory=list)  # hello 대화 기억 (최근 10턴)
 
 
 # ── 로드 / 저장 ──────────────────────────────────────────────────────────────
@@ -56,14 +57,17 @@ def load_memory() -> Memory:
     valid_lt = {f.name for f in fields(LongTermProfile)}
     long_term = LongTermProfile(**{k: v for k, v in lt_data.items() if k in valid_lt})
 
-    return Memory(short_term=short, mid_term=mid, long_term=long_term)
+    chat_history = data.get("chat_history", [])
+
+    return Memory(short_term=short, mid_term=mid, long_term=long_term, chat_history=chat_history)
 
 
 def save_memory(memory: Memory) -> None:
     store.save(memory_json(), {
-        "short_term": [asdict(r) for r in memory.short_term],
-        "mid_term":   [asdict(m) for m in memory.mid_term],
-        "long_term":  asdict(memory.long_term),
+        "short_term":   [asdict(r) for r in memory.short_term],
+        "mid_term":     [asdict(m) for m in memory.mid_term],
+        "long_term":    asdict(memory.long_term),
+        "chat_history": memory.chat_history,
     })
 
 

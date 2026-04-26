@@ -4,6 +4,7 @@ from gittchi.config import load_config
 from gittchi.state.pet import load_pet
 from gittchi.state.store import TamperedError
 from gittchi.rules.status import compute_status
+from gittchi.ui.ascii_pets import get as get_kaomoji
 
 console = Console()
 
@@ -32,10 +33,11 @@ def run() -> None:
     status_name, status_emoji = compute_status(pet.last_commit_at, pet.streak_days)
     if pet.is_angry:
         status_name, status_emoji = "화남", "😤"
+    kaomoji = get_kaomoji(config.pet_type, status_name)
 
     console.print(
         Panel(
-            f"[bold]{config.pet_name}[/bold]  Lv.{pet.level}\n"
+            f"[bold]{config.pet_name}[/bold]  Lv.{pet.level}  {kaomoji}\n"
             f"{status_emoji}  {status_name}\n\n"
             f"XP  {_xp_bar(pet.xp)}  {pet.xp}/100\n"
             f"총 커밋 {pet.total_commits}  |  연속 {pet.streak_days}일",
