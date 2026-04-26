@@ -34,7 +34,7 @@ def call_llm(
             model=model,
             messages=[{"role": "system", "content": system}] + messages,
             api_key=key or None,
-            timeout=6,
+            timeout=15,
         )
         return response.choices[0].message.content.strip()
     except Exception:
